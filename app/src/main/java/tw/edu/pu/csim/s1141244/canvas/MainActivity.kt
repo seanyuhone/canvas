@@ -61,12 +61,18 @@ fun CanvasScreen(modifier: Modifier = Modifier) {
     val minionsImage: ImageBitmap =
         ImageBitmap.imageResource(id = R.drawable.minions)
 
-    // 每秒向右移動 10px
+    // 每 0.1 秒移動 5px,完全超出邊界就回到 (0,0)
     LaunchedEffect(gameOver) {
         while (!gameOver) {
             delay(100L)
             minionsX += 5
             minionsY += 5
+
+            // 完全超出邊界 (左上角已超過畫布寬或高) 就回到 (0,0)
+            if (minionsX > CanvasWidth || minionsY > CanvaHeight) {
+                minionsX = 0f
+                minionsY = 0f
+            }
         }
     }
 
@@ -112,13 +118,16 @@ fun CanvasScreen(modifier: Modifier = Modifier) {
             }
         }
         Column {
-        Text("畫布寬度 $CanvasWidth, 長度 $CanvaHeight")
-            Button (
-                onClick = { gameOver = !gameOver}
+            Text("畫布寬度 $CanvasWidth, 長度 $CanvaHeight")
+            Button(
+                onClick = { gameOver = !gameOver }
             )
             {
-                if (gameOver){ Text("繼續遊戲") }
-                else { Text ("停止遊戲") }
+                if (gameOver) {
+                    Text("繼續遊戲")
+                } else {
+                    Text("停止遊戲")
+                }
             }
         }
     }
